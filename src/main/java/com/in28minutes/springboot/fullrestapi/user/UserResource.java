@@ -1,6 +1,9 @@
 package com.in28minutes.springboot.fullrestapi.user;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,12 +30,15 @@ public class UserResource {
         return service.findAll();
     }
     @GetMapping(USER_ID)
-    public User getUser(@PathVariable("id") int userId){
+    public EntityModel<User> getUser(@PathVariable("id") int userId){
         User user = service.getUser(userId);
         if(user == null){
             throw new UserNotFoundException("id: " + userId);
         }
-        else return user;
+        EntityModel entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder webMvcLinkBuilder = linkTo(methodOn(this.getClass()).getUsers());
+        entityModel.add(webMvcLinkBuilder.withRel("all-users"));
+         return entityModel;
     }
     @PostMapping(USERS)
     public ResponseEntity<User> createUser(@Valid @RequestBody User user){
