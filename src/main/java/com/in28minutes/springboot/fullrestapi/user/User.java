@@ -1,4 +1,5 @@
 package com.in28minutes.springboot.fullrestapi.user;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
@@ -7,6 +8,7 @@ import java.time.LocalDate;
 public class User {
 	
 	private Integer id;
+	@JsonProperty("user_name")
 	@Size(min=2,message = "name should be at least 2 characters")
 	private String name;
 	@Past(message = "Birth date should be in the past")
